@@ -23,19 +23,17 @@ $app->get('/', function() {
     echo "Pagina de gestión API REST de mi aplicación.";
 });
 
-// Cuando accedamos por get a la ruta /usuarios ejecutará lo siguiente:
+// Cuando accedamos por get a la ruta /preguntas ejecutará lo siguiente:
 $app->get('/preguntas', function() {
     echo Pregunta::All();
 });
 
-// Accedemos por get a /usuarios/ pasando un id de usuario. 
-// Por ejemplo /usuarios/veiga
-// Ruta /usuarios/id
 // Los parámetros en la url se definen con :parametro
 // El valor del parámetro :idusuario se pasará a la función de callback como argumento
 $app->get('/preguntas/:id', function($id) {
     echo Pregunta::find($id);
 });
+
 //preguntas por filtro 
 $app->get('/preguntas?filtro=:filtro', function($id) {
     echo "pregunta por filtro";
@@ -44,41 +42,32 @@ $app->get('/preguntas?filtro=:filtro', function($id) {
 $app->put('/preguntas/:id', function($id) {
     // Los datos serán accesibles de esta forma:
     $p = json_decode($app->request->getBody());
-    //echo json_encode($p->nombre);
-    $usuario = new Pregunta();
-    $usuario->id = $p->id;
-    $usuario->apellido = $p->apellido;
-    $usuario->nombre = $sp->nombre;
-    $usuario->email = $p->email;
-    $estado = $usuario->save();
+    $pregunta = Pregunta::find(1);
+    //$pregunta->email = 'john@foo.com';
+    $pregunta->save();
 });
 
 $app->delete('/preguntas/:id', function($id) {
     // Los datos serán accesibles de esta forma:
-    $p = json_decode($app->request->getBody());
-    //echo json_encode($p->nombre);
-    $usuario = new Pregunta();
-    $usuario->id = $p->id;
-    $usuario->apellido = $p->apellido;
-    $usuario->nombre = $sp->nombre;
-    $usuario->email = $p->email;
-    $estado = $usuario->delete();
+    $body = json_decode($app->request->getBody());
+    $pregunta = Pregunta::find($body->id);
+    echo $pregunta->delete();
 });
 
-// Alta de usuarios en la API REST
+// Alta (registro) en la API REST
 $app->post('/preguntas', function() {
     // Los datos serán accesibles de esta forma:
     $p = json_decode($app->request->getBody());
     //echo json_encode($p->nombre);
-    $usuario = new Pregunta();
-    $usuario->id = $p->id;
-    $usuario->apellido = $p->apellido;
-    $usuario->nombre = $sp->nombre;
-    $usuario->email = $p->email;
-    $estado = $usuario->save();
+    $pregunta = new Pregunta();
+    $pregunta->id = $p->id;
+    $pregunta->apellido = $p->apellido;
+    $pregunta->nombre = $sp->nombre;
+    $pregunta->email = $p->email;
+    $estado = $pregunta->save();
 
     if ($estado)
-        echo json_encode(array('estado' => true, 'mensaje' => 'Datos insertados correctamente. ', 'id' => $usuario->id));
+        echo json_encode(array('estado' => true, 'mensaje' => 'Datos insertados correctamente. ', 'id' => $pregunta->id));
     else
         echo json_encode(array('estado' => false, 'mensaje' => "Error al insertar datos en la tabla.", 'id' => ''));
 });
@@ -274,9 +263,5 @@ $app->get('/resultados?id_usuario=:id_usuario&id_area=:id_area', function($id_us
 $app->get('/resultados?id_usuario=:id_usuario', function($id_usuario) {
     echo "resultados generales de un usuario ";
 });
-
-
-
-
 
 $app->run();

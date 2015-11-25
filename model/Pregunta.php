@@ -5,9 +5,11 @@ require_once './config.php';
 class Pregunta extends Illuminate\Database\Eloquent\Model {
 
     protected $table = 'preguntas';
-    public $timestamps = false;
+    public $timestamps = false; //Para "evadir" un error que sale si no se usa esta sentencia.
+    protected $primaryKey = 'CODPREGUNTA';
 
 }
+
 /*
 //INSERTAR UN NUEVO REGISTRO
 $usuario = new Usuario;
