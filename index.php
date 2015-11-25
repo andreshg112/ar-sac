@@ -34,7 +34,7 @@ $app->get('/preguntas', function() {
 // Los parámetros en la url se definen con :parametro
 // El valor del parámetro :idusuario se pasará a la función de callback como argumento
 $app->get('/preguntas/:id', function($id) {
-    echo 'pregunta por id';
+    echo Pregunta::find($id);
 });
 //preguntas por filtro 
 $app->get('/preguntas?filtro=:filtro', function($id) {
@@ -84,7 +84,7 @@ $app->post('/preguntas', function() {
 });
 //aqui empiezan las áreas
 $app->get('/areas', function() {
-   echo "todas las areas";
+    echo "todas las areas";
 });
 
 // Accedemos por get a /usuarios/ pasando un id de usuario. 
