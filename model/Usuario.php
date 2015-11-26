@@ -3,8 +3,9 @@
 class Usuario extends MiModelo {
 
     protected $table = "usuarios";
-    protected $primaryKey = "EMAIL";
-    protected $hidden = ["CONTRASENIA"];
+    //protected $primaryKey = "EMAIL"; //No se debe usar porque al guardar (save), 
+    //le asigna un valor numerico del auto_increment
+    protected $hidden = ["CONTRASENIA", "id"];
     protected $fillable = array('EMAIL', 'NOMBRE', 'APELLIDO', 'FECHANAC', 'SEXO');
 
 }

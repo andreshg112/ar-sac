@@ -308,7 +308,7 @@ function post_usuarios() {
     $respuesta->result = $usuario->save();
     if ($respuesta->result) {
         $respuesta->mensaje = "Usuario registrado correctamente.";
-        $respuesta->usuario = $usuario->toJson();
+        $respuesta->usuario = $usuario;
     } else {
         $respuesta->mensaje = "Error registrando el usuario.";
     }
