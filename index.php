@@ -4,7 +4,12 @@
 //https://manuais.iessanclemente.net/index.php/Introduccion_a_API_REST_y_framework_Slim_de_PHP
 
 require 'Slim/Slim.php';
-require_once 'model/Pregunta.php';
+
+foreach (glob("model/*.php") as $filename) {
+    include $filename;
+}
+
+
 // El framework Slim tiene definido un namespace llamado Slim
 // Por eso aparece \Slim\ antes del nombre de la clase.
 \Slim\Slim::registerAutoloader();
@@ -22,6 +27,9 @@ $app = new \Slim\Slim();
 $app->get('/', function() {
     echo "Pagina de gestión API REST de mi aplicación.";
 });
+
+
+$app->get("/usuarios/sesion", "iniciar_sesion");
 
 // Cuando accedamos por get a la ruta /preguntas ejecutará lo siguiente:
 $app->get('/preguntas', function() {
@@ -47,12 +55,7 @@ $app->put('/preguntas/:id', function($id) {
     $pregunta->save();
 });
 
-$app->delete('/preguntas/:id', function($id) {
-    // Los datos serán accesibles de esta forma:
-    $body = json_decode($app->request->getBody());
-    $pregunta = Pregunta::find($body->id);
-    echo $pregunta->delete();
-});
+$app->delete('/preguntas/:id', "delete_pregunta");
 
 // Alta (registro) en la API REST
 $app->post('/preguntas', function() {
@@ -265,3 +268,29 @@ $app->get('/resultados?id_usuario=:id_usuario', function($id_usuario) {
 });
 
 $app->run();
+
+//Modificar porque no se puede eliminar por llave foranea
+function delete_pregunta($id) {
+    // Los datos serán accesibles de esta forma:
+    $pregunta = Pregunta::find($id);
+    echo $pregunta->delete();
+}
+
+function iniciar_sesion() {
+    $request = \Slim\Slim::getInstance()->request();
+    $email = $request->get("email");
+    $contrasenia = $request->get("contrasenia");
+    $usuario = Usuario::where('EMAIL', '=', $email)->first();
+    $respuesta = new stdClass();
+    if ($usuario) {
+        if ($usuario->CONTRASENIA == $contrasenia) {
+            $respuesta->result = 1;
+            $respuesta->usuario = $usuario;
+        } else {
+            $respuesta->result = 0;
+        }
+    } else {
+        $respuesta->result = -1;
+    }
+    echo json_encode($respuesta);
+}
