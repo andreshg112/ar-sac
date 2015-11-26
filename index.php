@@ -6,7 +6,7 @@
 require 'Slim/Slim.php';
 
 foreach (glob("model/*.php") as $filename) {
-    include $filename;
+    require_once $filename;
 }
 
 
@@ -30,6 +30,7 @@ $app->get('/', function() {
 
 
 $app->get("/usuarios/sesion", "iniciar_sesion");
+$app->get("/usuarios/azar", "get_usuarios_azar");
 $app->post("/usuarios", "post_usuarios");
 
 // Cuando accedamos por get a la ruta /preguntas ejecutará lo siguiente:
@@ -75,10 +76,9 @@ $app->post('/preguntas', function() {
     else
         echo json_encode(array('estado' => false, 'mensaje' => "Error al insertar datos en la tabla.", 'id' => ''));
 });
+
 //aqui empiezan las áreas
-$app->get('/areas', function() {
-    echo "todas las areas";
-});
+$app->get('/areas', "get_areas");
 
 // Accedemos por get a /usuarios/ pasando un id de usuario. 
 // Por ejemplo /usuarios/veiga
@@ -311,6 +311,36 @@ function post_usuarios() {
         $respuesta->usuario = $usuario;
     } else {
         $respuesta->mensaje = "Error registrando el usuario.";
+    }
+    echo json_encode($respuesta);
+}
+
+function get_areas() {
+    $respuesta = new stdClass();
+    $respuesta->areas = Area::all();
+    if (count($respuesta->areas) == 0) {
+        $respuesta->result = false;
+        $respuesta->mensaje = "No áreas registradas.";
+    }
+    echo json_encode($respuesta);
+}
+
+function get_usuarios_azar() {
+    //Devuelve n (limit) usuarios al azar filtrando por el parametro 'filtro'
+    $request = \Slim\Slim::getInstance()->request();
+    $limit = null !== $request->get("limit") ? $request->get("limit") : 10;
+    $filtro = null !== $request->get("filtro") ? $request->get("filtro") : "";
+    $respuesta = new stdClass();
+    $respuesta->usuarios = Usuario::selectRaw("concat(NOMBRE, APELLIDO, EMAIL) like '%?%'", [$filtro])
+            ->orderByRaw("RAND()")
+            ->take($limit)
+            //->orWhere("APELLIDO", "like", "%$filtro%")
+            //->orWhere("EMAIL", "like", "%$filtro%")
+            ->get();
+
+    if (count($respuesta->usuarios) == 0) {
+        $respuesta->result = false;
+        $respuesta->mensaje = "No hay usuarios registrados.";
     }
     echo json_encode($respuesta);
 }

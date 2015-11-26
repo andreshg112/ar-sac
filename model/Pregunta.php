@@ -1,5 +1,7 @@
 <?php
 
+
+
 class Pregunta extends MiModelo {
 
     protected $table = 'preguntas';

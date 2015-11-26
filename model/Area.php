@@ -2,13 +2,9 @@
 
 require_once 'MiModelo.php';
 
-class Usuario extends MiModelo {
+class Area extends MiModelo {
 
-    protected $table = "usuarios";
-    //protected $primaryKey = "EMAIL"; //No se debe usar porque al guardar (save), 
-    //le asigna un valor numerico del auto_increment
-    protected $hidden = ["CONTRASENIA", "id"];
-    protected $fillable = array('EMAIL', 'NOMBRE', 'APELLIDO', 'FECHANAC', 'SEXO');
+    protected $table = "areas";
 
 }
 
