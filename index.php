@@ -30,6 +30,7 @@ $app->get('/', function() {
 
 
 $app->get("/usuarios/sesion", "iniciar_sesion");
+$app->post("/usuarios", "post_usuarios");
 
 // Cuando accedamos por get a la ruta /preguntas ejecutará lo siguiente:
 $app->get('/preguntas', function() {
@@ -286,11 +287,30 @@ function iniciar_sesion() {
         if ($usuario->CONTRASENIA == $contrasenia) {
             $respuesta->result = 1;
             $respuesta->usuario = $usuario;
+            $respuesta->mensaje = "Datos ingresados correctamente.";
         } else {
             $respuesta->result = 0;
+            $respuesta->mensaje = "Contraseña incorrecta.";
         }
     } else {
         $respuesta->result = -1;
+        $respuesta->mensaje = "El email ingresado no se encuentra registrado.";
+    }
+    echo json_encode($respuesta);
+}
+
+function post_usuarios() {
+    $request = \Slim\Slim::getInstance()->request();
+    $received = json_decode($request->getBody());
+    $usuario = new Usuario();
+    $usuario->add_data($received);
+    $respuesta = new stdClass();
+    $respuesta->result = $usuario->save();
+    if ($respuesta->result) {
+        $respuesta->mensaje = "Usuario registrado correctamente.";
+        $respuesta->usuario = $usuario->toJson();
+    } else {
+        $respuesta->mensaje = "Error registrando el usuario.";
     }
     echo json_encode($respuesta);
 }

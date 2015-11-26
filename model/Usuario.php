@@ -1,12 +1,11 @@
 <?php
 
-require_once './config.php';
-
-class Usuario extends Illuminate\Database\Eloquent\Model {
+class Usuario extends MiModelo {
 
     protected $table = "usuarios";
-    public $timestamps = false; //Para "evadir" un error que sale si no se usa esta sentencia.
     protected $primaryKey = "EMAIL";
+    protected $hidden = ["CONTRASENIA"];
+    protected $fillable = array('EMAIL', 'NOMBRE', 'APELLIDO', 'FECHANAC', 'SEXO');
 
 }
 
