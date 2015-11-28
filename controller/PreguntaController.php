@@ -15,10 +15,7 @@ class PreguntaController {
         return $respuesta;
     }
 
-    public static function post_preguntas() {
-        $request = \Slim\Slim::getInstance()->request();
-        // Los datos serán accesibles de esta forma:
-        $recibido = json_decode($request->getBody());
+    public static function post_preguntas($recibido) {
         $pregunta = new Pregunta();
         $pregunta->add_data($recibido);
         $respuesta = new stdClass();

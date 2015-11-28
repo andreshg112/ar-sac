@@ -2,9 +2,6 @@
 
 require 'Slim/Slim.php';
 
-foreach (glob("model/*.php") as $filename) {
-    require_once $filename;
-}
 foreach (glob("controller/*.php") as $filename) {
     require_once $filename;
 }
@@ -266,7 +263,10 @@ function get_preguntas() {
 }
 
 function post_preguntas() {
-    echo json_encode(PreguntaController::post_preguntas());
+    $request = \Slim\Slim::getInstance()->request();
+    // Los datos serán accesibles de esta forma:
+    $recibido = json_decode($request->getBody());
+    echo json_encode(PreguntaController::post_preguntas($recibido));
 }
 
 function put_preguntas($id) {
