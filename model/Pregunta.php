@@ -1,6 +1,6 @@
 <?php
 
-
+require_once 'MiModelo.php';
 
 class Pregunta extends MiModelo {
 

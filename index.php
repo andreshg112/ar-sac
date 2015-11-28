@@ -1,14 +1,13 @@
 <?php
 
-//Buen Manual
-//https://manuais.iessanclemente.net/index.php/Introduccion_a_API_REST_y_framework_Slim_de_PHP
-
 require 'Slim/Slim.php';
 
 foreach (glob("model/*.php") as $filename) {
     require_once $filename;
 }
-
+foreach (glob("controller/*.php") as $filename) {
+    require_once $filename;
+}
 
 // El framework Slim tiene definido un namespace llamado Slim
 // Por eso aparece \Slim\ antes del nombre de la clase.
@@ -18,73 +17,39 @@ foreach (glob("model/*.php") as $filename) {
 $app = new \Slim\Slim();
 
 // Indicamos el tipo de contenido y condificación que devolvemos desde el framework Slim.
-#$app->contentType('text/html; charset=utf-8');
-// Definimos conexion de la base de datos.
-// Lo haremos utilizando PDO con el driver mysql.
-//$db->exec("set names utf8");
-
+#$app->contentType("application/json; charset=utf-8");
 
 $app->get('/', function() {
     echo "Pagina de gestión API REST de mi aplicación.";
 });
 
-
-$app->get("/usuarios/sesion", "iniciar_sesion");
+//GET: Obtener, Solicitar
+//POST: Enviar, Registrar
+//PUT: Actualizar
+//DELETE: Eliminar un registro
+//
+//Usuarios
+$app->post("/usuarios/sesion", "iniciar_sesion");
 $app->get("/usuarios", "get_usuarios");
 $app->post("/usuarios", "post_usuarios");
 
-// Cuando accedamos por get a la ruta /preguntas ejecutará lo siguiente:
-$app->get('/preguntas', function() {
-    echo Pregunta::All();
-});
-
+//Preguntas
+$app->get('/preguntas', "get_preguntas");
 // Los parámetros en la url se definen con :parametro
-// El valor del parámetro :idusuario se pasará a la función de callback como argumento
+// El valor del parámetro :id se pasará a la función de callback como argumento
 $app->get('/preguntas/:id', function($id) {
+    //Modificar
+    //No es prioritario que se busquen las preguntas por id
     echo Pregunta::find($id);
 });
-
-//preguntas por filtro 
-$app->get('/preguntas?filtro=:filtro', function($id) {
-    echo "pregunta por filtro";
-});
-
-$app->put('/preguntas/:id', function($id) {
-    // Los datos serán accesibles de esta forma:
-    $p = json_decode($app->request->getBody());
-    $pregunta = Pregunta::find(1);
-    //$pregunta->email = 'john@foo.com';
-    $pregunta->save();
-});
+$app->post('/preguntas', "post_preguntas");
+$app->put('/preguntas/:id', "put_preguntas");
 
 $app->delete('/preguntas/:id', "delete_pregunta");
 
-// Alta (registro) en la API REST
-$app->post('/preguntas', function() {
-    // Los datos serán accesibles de esta forma:
-    $p = json_decode($app->request->getBody());
-    //echo json_encode($p->nombre);
-    $pregunta = new Pregunta();
-    $pregunta->id = $p->id;
-    $pregunta->apellido = $p->apellido;
-    $pregunta->nombre = $sp->nombre;
-    $pregunta->email = $p->email;
-    $estado = $pregunta->save();
-
-    if ($estado)
-        echo json_encode(array('estado' => true, 'mensaje' => 'Datos insertados correctamente. ', 'id' => $pregunta->id));
-    else
-        echo json_encode(array('estado' => false, 'mensaje' => "Error al insertar datos en la tabla.", 'id' => ''));
-});
-
-//aqui empiezan las áreas
+//Areas
 $app->get('/areas', "get_areas");
 
-// Accedemos por get a /usuarios/ pasando un id de usuario. 
-// Por ejemplo /usuarios/veiga
-// Ruta /usuarios/id
-// Los parámetros en la url se definen con :parametro
-// El valor del parámetro :idusuario se pasará a la función de callback como argumento
 $app->get('/areas/:id', function($id) {
     echo 'areas por id';
 });
@@ -279,40 +244,16 @@ function delete_pregunta($id) {
 
 function iniciar_sesion() {
     $request = \Slim\Slim::getInstance()->request();
-    $email = $request->get("email");
-    $contrasenia = $request->get("contrasenia");
-    $usuario = Usuario::where('EMAIL', '=', $email)->first();
-    $respuesta = new stdClass();
-    if ($usuario) {
-        if ($usuario->CONTRASENIA == $contrasenia) {
-            $respuesta->result = 1;
-            $respuesta->usuario = $usuario;
-            $respuesta->mensaje = "Datos ingresados correctamente.";
-        } else {
-            $respuesta->result = 0;
-            $respuesta->mensaje = "Contraseña incorrecta.";
-        }
-    } else {
-        $respuesta->result = -1;
-        $respuesta->mensaje = "El email ingresado no se encuentra registrado.";
-    }
-    echo json_encode($respuesta);
+    $recibido = json_decode($request->getBody());
+    $email = $recibido->email;
+    $contrasenia = !isset($recibido->contrasenia) ? "" : $recibido->contrasenia;
+    echo json_encode(UsuarioController::iniciar_sesion($email, $contrasenia));
 }
 
 function post_usuarios() {
     $request = \Slim\Slim::getInstance()->request();
-    $received = json_decode($request->getBody());
-    $usuario = new Usuario();
-    $usuario->add_data($received);
-    $respuesta = new stdClass();
-    $respuesta->result = $usuario->save();
-    if ($respuesta->result) {
-        $respuesta->mensaje = "Usuario registrado correctamente.";
-        $respuesta->usuario = $usuario;
-    } else {
-        $respuesta->mensaje = "Error registrando el usuario.";
-    }
-    echo json_encode($respuesta);
+    $recibido = json_decode($request->getBody());
+    echo json_encode(UsuarioController::post_usuarios($recibido));
 }
 
 function get_areas() {
@@ -320,28 +261,23 @@ function get_areas() {
     $respuesta->areas = Area::all();
     if (count($respuesta->areas) == 0) {
         $respuesta->result = false;
-        $respuesta->mensaje = "No áreas registradas.";
+        $respuesta->mensaje = "No hay áreas registradas.";
     }
     echo json_encode($respuesta);
 }
 
-//Perfeccionar el filtro para buscar que contengan el parametro $filtro, usando %
-//Lo anterior se puede hacer enviando los datos concatenados por un % en vez de espacios
 function get_usuarios() {
-    //Devuelve n (limit) usuarios al azar filtrando por el parametro 'filtro'
-    $request = \Slim\Slim::getInstance()->request();
-    $limit = null !== $request->get("limit") ? $request->get("limit") : 10;
-    $filtro = null !== $request->get("filtro") ? $request->get("filtro") : "";
-    $orden = null !== $request->get("orden") ? "datos_concatenados" : "rand()";
-    $respuesta = new stdClass();
-    $respuesta->usuarios = Usuario::selectRaw("*, concat(NOMBRE, ' ', APELLIDO, ' ', EMAIL) as datos_concatenados")
-            ->havingRaw("datos_concatenados like '%$filtro%'")
-            ->take($limit)
-            ->orderByRaw($orden)
-            ->get();
-    if (count($respuesta->usuarios) == 0) {
-        $respuesta->result = false;
-        $respuesta->mensaje = "No hay usuarios que cumplan con el criterio de búsqueda.";
-    }
-    echo json_encode($respuesta);
+    echo json_encode(UsuarioController::get_usuarios());
+}
+
+function get_preguntas() {
+    echo json_encode(PreguntaController::get_preguntas());
+}
+
+function post_preguntas() {
+    echo json_encode(PreguntaController::post_preguntas());
+}
+
+function put_preguntas($id) {
+    echo json_encode(PreguntaController::put_preguntas($id));
 }
