@@ -235,13 +235,6 @@ $app->get('/resultados?id_usuario=:id_usuario', function($id_usuario) {
 
 $app->run();
 
-//Modificar porque no se puede eliminar por llave foranea
-function delete_pregunta($id) {
-    // Los datos serán accesibles de esta forma:
-    $pregunta = Pregunta::find($id);
-    echo $pregunta->delete();
-}
-
 function iniciar_sesion() {
     $request = \Slim\Slim::getInstance()->request();
     $recibido = json_decode($request->getBody());
@@ -257,17 +250,15 @@ function post_usuarios() {
 }
 
 function get_areas() {
-    $respuesta = new stdClass();
-    $respuesta->areas = Area::all();
-    if (count($respuesta->areas) == 0) {
-        $respuesta->result = false;
-        $respuesta->mensaje = "No hay áreas registradas.";
-    }
-    echo json_encode($respuesta);
+    echo json_encode(AreaController::get_areas());
 }
 
 function get_usuarios() {
-    echo json_encode(UsuarioController::get_usuarios());
+    $request = \Slim\Slim::getInstance()->request();
+    $limit = null !== $request->get("limit") ? $request->get("limit") : 10;
+    $filtro = null !== $request->get("filtro") ? $request->get("filtro") : "";
+    $orden = null !== $request->get("orden") ? "datos_concatenados" : "rand()";
+    echo json_encode(UsuarioController::get_usuarios($limit, $filtro, $orden));
 }
 
 function get_preguntas() {
@@ -280,4 +271,8 @@ function post_preguntas() {
 
 function put_preguntas($id) {
     echo json_encode(PreguntaController::put_preguntas($id));
+}
+
+function delete_pregunta($id) {
+    echo json_encode(PreguntaController::delete_pregunta($id));
 }

@@ -49,4 +49,11 @@ class PreguntaController {
         return $respuesta;
     }
 
+    //Modificar porque no se puede eliminar por llave foranea
+    public static function delete_pregunta($id) {
+        // Los datos serán accesibles de esta forma:
+        $pregunta = Pregunta::find($id);
+        echo $pregunta->delete();
+    }
+
 }

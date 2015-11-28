@@ -4,16 +4,12 @@ require_once './model/Usuario.php';
 
 class UsuarioController {
 
-    public static function get_usuarios() {
+    public static function get_usuarios($limit, $filtro, $orden) {
         //Perfeccionar el filtro para buscar que contengan el parametro $filtro, usando %
         //Lo anterior se puede hacer enviando los datos concatenados por un % en vez de espacios
         //Devuelve n (limit) usuarios al azar filtrando por el parametro 'filtro', 
         //ordenando por "NOMBRE" (principalmente) 
         //si se le pasa el parametro "orden" (sin importar su valor)
-        $request = \Slim\Slim::getInstance()->request();
-        $limit = null !== $request->get("limit") ? $request->get("limit") : 10;
-        $filtro = null !== $request->get("filtro") ? $request->get("filtro") : "";
-        $orden = null !== $request->get("orden") ? "datos_concatenados" : "rand()";
         $respuesta = new stdClass();
         $respuesta->usuarios = Usuario::selectRaw("*, concat(NOMBRE, ' ', APELLIDO, ' ', EMAIL) as datos_concatenados")
                 ->havingRaw("datos_concatenados like '%$filtro%'")
