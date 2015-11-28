@@ -30,7 +30,7 @@ $app->get('/', function() {
 
 
 $app->get("/usuarios/sesion", "iniciar_sesion");
-$app->get("/usuarios/azar", "get_usuarios_azar");
+$app->get("/usuarios", "get_usuarios");
 $app->post("/usuarios", "post_usuarios");
 
 // Cuando accedamos por get a la ruta /preguntas ejecutará lo siguiente:
@@ -325,23 +325,19 @@ function get_areas() {
     echo json_encode($respuesta);
 }
 
-function get_usuarios_azar() {
+//Perfeccionar el filtro para buscar que contengan el parametro $filtro, usando %
+//Lo anterior se puede hacer enviando los datos concatenados por un % en vez de espacios
+function get_usuarios() {
     //Devuelve n (limit) usuarios al azar filtrando por el parametro 'filtro'
     $request = \Slim\Slim::getInstance()->request();
     $limit = null !== $request->get("limit") ? $request->get("limit") : 10;
     $filtro = null !== $request->get("filtro") ? $request->get("filtro") : "";
+    $orden = null !== $request->get("orden") ? "datos_concatenados" : "rand()";
     $respuesta = new stdClass();
-
-
-//    echo Usuario::select(Usuario::raw('CONCAT(NOMBRE, " ", APELLIDO, " ", EMAIL) AS datos_concatenados'))
-//            ->orderByRaw('rand()')
-//            ->lists('datos_concatenados');
-
-
     $respuesta->usuarios = Usuario::selectRaw("*, concat(NOMBRE, ' ', APELLIDO, ' ', EMAIL) as datos_concatenados")
             ->havingRaw("datos_concatenados like '%$filtro%'")
             ->take($limit)
-            ->orderByRaw("RAND()")
+            ->orderByRaw($orden)
             ->get();
     if (count($respuesta->usuarios) == 0) {
         $respuesta->result = false;
