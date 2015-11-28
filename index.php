@@ -41,18 +41,19 @@ $app->get('/preguntas/:id', function($id) {
 });
 $app->post('/preguntas', "post_preguntas");
 $app->put('/preguntas/:id', "put_preguntas");
-
+//Modificar
 $app->delete('/preguntas/:id', "delete_pregunta");
-
+$app->get('/preguntas/:id', function($id) {
+    echo 'preguntas por el id de la pregunta';
+});
+$app->get("/preguntas/:id/opciones", "get_opciones_pregunta");
 //Areas
 $app->get('/areas', "get_areas");
 
 $app->get('/areas/:id', function($id) {
     echo 'areas por id';
 });
-$app->get('/preguntas/:id', function($id) {
-    echo 'preguntas por el id del area';
-});
+
 
 $app->put('/areas/:id/preguntas', function($id) {
     // Los datos serán accesibles de esta forma:
@@ -275,4 +276,8 @@ function put_preguntas($id) {
 
 function delete_pregunta($id) {
     echo json_encode(PreguntaController::delete_pregunta($id));
+}
+
+function get_opciones_pregunta($id) {
+    echo json_encode(PreguntaController::get_opciones_pregunta($id));
 }

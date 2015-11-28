@@ -1,17 +1,13 @@
 <?php
 
 require_once 'MiModelo.php';
-require_once 'Opcion.php';
 
-class Pregunta extends MiModelo {
+class Opcion extends MiModelo {
 
-    protected $table = 'preguntas';
+    protected $table = 'opciones';
     public $timestamps = false; //Para "evadir" un error que sale si no se usa esta sentencia.
-    protected $primaryKey = 'CODPREGUNTA';
+    protected $primaryKey = 'CODOPCION';
 
-    public function opciones() {
-        return $this->hasMany("Opcion", "CODPREGUNTA", "CODPREGUNTA");
-    }
 }
 
 /*

@@ -53,4 +53,21 @@ class PreguntaController {
         echo $pregunta->delete();
     }
 
+    public static function get_opciones_pregunta($id) {
+        $respuesta = new stdClass();
+        $pregunta = Pregunta::find($id);
+        if ($pregunta) {
+            $respuesta->opciones = $pregunta->opciones;
+            if (count($respuesta->opciones) == 0) {
+                $respuesta->result = false;
+                $respuesta->mensaje = "No hay opciones registradas para la pregunta con código '$id'.";
+            }
+        } else {
+            $respuesta->result = false;
+            $respuesta->mensaje = "La pregunta con código '$id' no se encuentra registrada.";
+        }
+
+        return $respuesta;
+    }
+
 }
