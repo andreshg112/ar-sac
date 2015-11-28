@@ -331,16 +331,21 @@ function get_usuarios_azar() {
     $limit = null !== $request->get("limit") ? $request->get("limit") : 10;
     $filtro = null !== $request->get("filtro") ? $request->get("filtro") : "";
     $respuesta = new stdClass();
-    $respuesta->usuarios = Usuario::selectRaw("concat(NOMBRE, APELLIDO, EMAIL) like '%?%'", [$filtro])
-            ->orderByRaw("RAND()")
-            ->take($limit)
-            //->orWhere("APELLIDO", "like", "%$filtro%")
-            //->orWhere("EMAIL", "like", "%$filtro%")
-            ->get();
 
+
+//    echo Usuario::select(Usuario::raw('CONCAT(NOMBRE, " ", APELLIDO, " ", EMAIL) AS datos_concatenados'))
+//            ->orderByRaw('rand()')
+//            ->lists('datos_concatenados');
+
+
+    $respuesta->usuarios = Usuario::selectRaw("*, concat(NOMBRE, ' ', APELLIDO, ' ', EMAIL) as datos_concatenados")
+            ->havingRaw("datos_concatenados like '%$filtro%'")
+            ->take($limit)
+            ->orderByRaw("RAND()")
+            ->get();
     if (count($respuesta->usuarios) == 0) {
         $respuesta->result = false;
-        $respuesta->mensaje = "No hay usuarios registrados.";
+        $respuesta->mensaje = "No hay usuarios que cumplan con el criterio de búsqueda.";
     }
     echo json_encode($respuesta);
 }
