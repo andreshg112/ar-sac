@@ -5,7 +5,6 @@ require_once 'MiModelo.php';
 class Opcion extends MiModelo {
 
     protected $table = 'opciones';
-    public $timestamps = false; //Para "evadir" un error que sale si no se usa esta sentencia.
     protected $primaryKey = 'CODOPCION';
 
 }

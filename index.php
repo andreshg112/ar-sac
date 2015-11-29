@@ -49,24 +49,10 @@ $app->get('/preguntas/:id', function($id) {
 $app->get("/preguntas/:id/opciones", "get_opciones_pregunta");
 //Areas
 $app->get('/areas', "get_areas");
-
+$app->get('/areas/:id/preguntas', "get_preguntas_area");
 $app->get('/areas/:id', function($id) {
     echo 'areas por id';
 });
-
-
-$app->put('/areas/:id/preguntas', function($id) {
-    // Los datos serán accesibles de esta forma:
-    $p = json_decode($app->request->getBody());
-    //echo json_encode($p->nombre);
-    $usuario = new Pregunta();
-    $usuario->id = $p->id;
-    $usuario->apellido = $p->apellido;
-    $usuario->nombre = $sp->nombre;
-    $usuario->email = $p->email;
-    $estado = $usuario->save();
-});
-
 $app->delete('/areas/:id', function($id) {
     // Los datos serán accesibles de esta forma:
     $p = json_decode($app->request->getBody());
@@ -280,4 +266,8 @@ function delete_pregunta($id) {
 
 function get_opciones_pregunta($id) {
     echo json_encode(PreguntaController::get_opciones_pregunta($id));
+}
+
+function get_preguntas_area($id) {
+    echo json_encode(AreaController::get_preguntas_area($id));
 }
