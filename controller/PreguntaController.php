@@ -62,12 +62,34 @@ class PreguntaController {
             if (count($respuesta->opciones) == 0) {
                 $respuesta->result = false;
                 $respuesta->mensaje = "No hay opciones registradas para la pregunta con código '$id'.";
+            } else {
+                $respuesta->result = true;
             }
         } else {
             $respuesta->result = false;
             $respuesta->mensaje = "La pregunta con código '$id' no se encuentra registrada.";
         }
+        return $respuesta;
+    }
 
+    public static function get_pregunta_no_respondida($email, $id_reto, $id_area) {
+        $respuesta = new stdClass();
+        $pregunta = Pregunta::whereNotIn("CODPREGUNTA", function($query) use ($email, $id_reto) {
+                    $query->select("CODPREGUNTA")
+                    ->from("RESPONDIDAS_RETO")
+                    ->where("EMAIL", "=", "$email")
+                    ->where("ID_RETO", "=", "$id_reto");
+                })
+                ->where("CODAREA", "=", "$id_area")
+                ->orderByRaw("rand()")
+                ->first();
+        if ($pregunta) {
+            $respuesta->pregunta = $pregunta;
+            $respuesta->result = true;
+        } else {
+            $respuesta->result = false;
+            $respuesta->mensaje = "Ha respondido todas las preguntas en el reto.";
+        }
         return $respuesta;
     }
 
