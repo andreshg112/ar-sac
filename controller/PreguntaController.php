@@ -88,7 +88,7 @@ class PreguntaController {
             $respuesta->result = true;
         } else {
             $respuesta->result = false;
-            $respuesta->mensaje = "Ha respondido todas las preguntas en el reto.";
+            $respuesta->mensaje = "Error. Revise los datos enviados.";
         }
         return $respuesta;
     }

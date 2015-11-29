@@ -16,4 +16,4 @@ foreach (glob("controller/*.php") as $filename) {
 //        ->orderByRaw("rand()")
 //        ->first();
 
-echo json_encode(PreguntaController::get_pregunta_no_respondida("andreshg112@gmail.com", "1", "1"));
+echo json_encode(PreguntaController::get_pregunta_no_respondida(null, null, "1"));

@@ -4,7 +4,7 @@ require_once './model/Reto.php';
 
 class RetoController {
 
-    public static function post_reto($recibido) {
+    public static function post_retos($recibido) {
         $reto = new Reto();
         $reto->add_data($recibido);
         $respuesta = new stdClass();

@@ -39,11 +39,12 @@ $app->get('/preguntas/:id', function($id) {
     //No es prioritario que se busquen las preguntas por id
     echo Pregunta::find($id);
 });
-$app->post('/preguntas', "post_preguntas");
-$app->put('/preguntas/:id', "put_preguntas");
+$app->post('/preguntas', 'post_preguntas');
+$app->put('/preguntas/:id', 'put_preguntas');
 //Modificar
-$app->delete('/preguntas/:id', "delete_pregunta");
-$app->get("/preguntas/:id/opciones", "get_opciones_pregunta");
+$app->delete('/preguntas/:id', 'delete_pregunta');
+$app->get('/preguntas/:id/opciones', 'get_opciones_pregunta');
+$app->get('/preguntas/no-respondidas', 'get_pregunta_no_respondida');
 
 //Areas
 $app->get('/areas', "get_areas");
@@ -56,7 +57,7 @@ $app->get('/encabezados', function() {
 });
 
 //Retos
-$app->post('/retos', "post_retos");
+$app->post('/retos', 'post_retos');
 
 // Accedemos por get a /usuarios/ pasando un id de usuario. 
 // Por ejemplo /usuarios/veiga
@@ -249,5 +250,21 @@ function post_areas() {
 }
 
 function post_retos() {
-    
+    $request = \Slim\Slim::getInstance()->request();
+    $recibido = json_decode($request->getBody());
+    echo json_encode(RetoController::post_retos($recibido));
+}
+
+function get_pregunta_no_respondida() {
+    $request = \Slim\Slim::getInstance()->request();
+    if (isset($request->get("email")) && isset($request->get("id_reto")) && isset($request->get("codarea"))) {
+        echo json_encode(PreguntaController::get_pregunta_no_respondida(
+                        $request->get("email"), $request->get("id_reto"), $request->get("codarea")
+        ));
+    } else {
+        $respuesta = new stdClass();
+        $respuesta->result = false;
+        $respuesta->mensaje = "Error. Revise los datos enviados.";
+        echo json_encode($respuesta);
+    }
 }
