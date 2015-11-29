@@ -43,50 +43,20 @@ $app->post('/preguntas', "post_preguntas");
 $app->put('/preguntas/:id', "put_preguntas");
 //Modificar
 $app->delete('/preguntas/:id', "delete_pregunta");
-$app->get('/preguntas/:id', function($id) {
-    echo 'preguntas por el id de la pregunta';
-});
 $app->get("/preguntas/:id/opciones", "get_opciones_pregunta");
+
 //Areas
 $app->get('/areas', "get_areas");
 $app->get('/areas/:id/preguntas', "get_preguntas_area");
-$app->get('/areas/:id', function($id) {
-    echo 'areas por id';
-});
-$app->delete('/areas/:id', function($id) {
-    // Los datos serán accesibles de esta forma:
-    $p = json_decode($app->request->getBody());
-    //echo json_encode($p->nombre);
-    $usuario = new Pregunta();
-    $usuario->id = $p->id;
-    $usuario->apellido = $p->apellido;
-    $usuario->nombre = $sp->nombre;
-    $usuario->email = $p->email;
-    $estado = $usuario->delete();
-});
+$app->post('/areas', "post_areas");
 
-// Alta de usuarios en la API REST
-$app->post('/areas', function() {
-    // Los datos serán accesibles de esta forma:
-    $p = json_decode($app->request->getBody());
-    //echo json_encode($p->nombre);
-    $usuario = new Pregunta();
-    $usuario->id = $p->id;
-    $usuario->apellido = $p->apellido;
-    $usuario->nombre = $sp->nombre;
-    $usuario->email = $p->email;
-    $estado = $usuario->save();
-
-    if ($estado)
-        echo json_encode(array('estado' => true, 'mensaje' => 'Datos insertados correctamente. ', 'id' => $usuario->id));
-    else
-        echo json_encode(array('estado' => false, 'mensaje' => "Error al insertar datos en la tabla.", 'id' => ''));
-});
-
-// aqui empiezan encabezados 
+//Encabezados
 $app->get('/encabezados', function() {
     echo 'todos los encabezados';
 });
+
+//Retos
+$app->post('/retos', "post_retos");
 
 // Accedemos por get a /usuarios/ pasando un id de usuario. 
 // Por ejemplo /usuarios/veiga
@@ -270,4 +240,14 @@ function get_opciones_pregunta($id) {
 
 function get_preguntas_area($id) {
     echo json_encode(AreaController::get_preguntas_area($id));
+}
+
+function post_areas() {
+    $request = \Slim\Slim::getInstance()->request();
+    $recibido = json_decode($request->getBody());
+    echo json_encode(AreaController::post_areas($recibido));
+}
+
+function post_retos() {
+    
 }

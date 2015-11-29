@@ -31,4 +31,18 @@ class AreaController {
         return $respuesta;
     }
 
+    public static function post_areas($recibido) {
+        $area = new Area();
+        $area->add_data($recibido);
+        $respuesta = new stdClass();
+        $respuesta->result = $area->save();
+        if ($respuesta->result) {
+            $respuesta->mensaje = "Área registrada correctamente.";
+            $respuesta->area = $area;
+        } else {
+            $respuesta->mensaje = "No se pudo registrar el área.";
+        }
+        return $respuesta;
+    }
+
 }

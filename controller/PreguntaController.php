@@ -30,6 +30,7 @@ class PreguntaController {
     }
 
     public static function put_preguntas($id) {
+        //Refactorizar
         $request = \Slim\Slim::getInstance()->request();
         // Los datos serán accesibles de esta forma:
         $recibido = json_decode($request->getBody());
