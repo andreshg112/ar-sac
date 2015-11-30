@@ -44,7 +44,7 @@ $app->put('/preguntas/:id', 'put_preguntas');
 //Modificar
 $app->delete('/preguntas/:id', 'delete_pregunta');
 $app->get('/preguntas/:id/opciones', 'get_opciones_pregunta');
-$app->get('/preguntas/no-respondidas', 'get_pregunta_no_respondida');
+$app->get('/no-respondida', 'get_pregunta_no_respondida');
 
 //Areas
 $app->get('/areas', "get_areas");
@@ -256,8 +256,12 @@ function post_retos() {
 }
 
 function get_pregunta_no_respondida() {
+    echo "algo";
     $request = \Slim\Slim::getInstance()->request();
-    if (isset($request->get("email")) && isset($request->get("id_reto")) && isset($request->get("codarea"))) {
+    $email = null !== $request->get("email") ? $request->get("email") : null;
+    $id_reto = null !== $request->get("id_reto") ? $request->get("id_reto") : null;
+    $codarea = null !== $request->get("codarea") ? $request->get("codarea") : null;
+    if (isset($email) && isset($id_reto) && isset($codarea)) {
         echo json_encode(PreguntaController::get_pregunta_no_respondida(
                         $request->get("email"), $request->get("id_reto"), $request->get("codarea")
         ));

@@ -2,6 +2,7 @@
 
 require_once 'MiModelo.php';
 require_once 'Opcion.php';
+require_once 'Encabezado.php';
 
 class Pregunta extends MiModelo {
 
@@ -11,6 +12,11 @@ class Pregunta extends MiModelo {
     public function opciones() {
         return $this->hasMany("Opcion", "CODPREGUNTA", "CODPREGUNTA");
     }
+
+    public function encabezado() {
+        return $this->belongsTo('Encabezado', 'ID_ENCABEZADO', 'ID_ENCABEZADO');
+    }
+
 }
 
 /*

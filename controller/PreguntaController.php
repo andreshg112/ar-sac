@@ -8,6 +8,9 @@ class PreguntaController {
     public static function get_preguntas() {
         $respuesta = new stdClass();
         $respuesta->preguntas = Pregunta::all();
+        foreach ($respuesta->preguntas as $pregunta) {
+            $pregunta->encabezado;
+        }
         if (count($respuesta->preguntas) == 0) {
             $respuesta->result = false;
             $respuesta->mensaje = "No hay preguntas registradas.";
@@ -84,6 +87,7 @@ class PreguntaController {
                 ->orderByRaw("rand()")
                 ->first();
         if ($pregunta) {
+            $pregunta->encabezado;
             $respuesta->pregunta = $pregunta;
             $respuesta->result = true;
         } else {
