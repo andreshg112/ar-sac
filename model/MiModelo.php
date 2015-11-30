@@ -11,6 +11,7 @@ abstract class MiModelo extends Illuminate\Database\Eloquent\Model {
         //(tal vez enviados por POST), y agregarlos a este objeto (this) instanciado.
         foreach ($recibido as $key => $value) {
             $KEY = strtoupper($key);
+            //$this->attributes[$KEY] = $value;
             $this->$KEY = $value;
         }
     }

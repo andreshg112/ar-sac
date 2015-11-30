@@ -8,6 +8,7 @@ class Pregunta extends MiModelo {
 
     protected $table = 'preguntas';
     protected $primaryKey = 'CODPREGUNTA';
+    protected $fillable = ["enunciado", "codarea", "tipo_opciones", "opciones"];
 
     public function opciones() {
         return $this->hasMany("Opcion", "CODPREGUNTA", "CODPREGUNTA");
