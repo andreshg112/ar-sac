@@ -256,7 +256,6 @@ function post_retos() {
 }
 
 function get_pregunta_no_respondida() {
-    echo "algo";
     $request = \Slim\Slim::getInstance()->request();
     $email = null !== $request->get("email") ? $request->get("email") : null;
     $id_reto = null !== $request->get("id_reto") ? $request->get("id_reto") : null;
