@@ -1,5 +1,6 @@
 <?php
 
+require 'cors.php';
 require 'Slim/Slim.php';
 
 foreach (glob("controller/*.php") as $filename) {
