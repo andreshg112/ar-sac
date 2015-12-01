@@ -53,9 +53,8 @@ $app->get('/areas/:id/preguntas', "get_preguntas_area");
 $app->post('/areas', "post_areas");
 
 //Encabezados
-$app->get('/encabezados', function() {
-    echo 'todos los encabezados';
-});
+$app->get('/encabezados', 'get_encabezados');
+$app->post('/encabezados', 'post_encabezados');
 
 //Retos
 $app->post('/retos', 'post_retos');
@@ -95,24 +94,6 @@ $app->delete('/encabezados/:id', function($id) {
     $usuario->nombre = $sp->nombre;
     $usuario->email = $p->email;
     $estado = $usuario->delete();
-});
-
-// Alta de usuarios en la API REST
-$app->post('/encabezados', function() {
-    // Los datos serán accesibles de esta forma:
-    $p = json_decode($app->request->getBody());
-    //echo json_encode($p->nombre);
-    $usuario = new Pregunta();
-    $usuario->id = $p->id;
-    $usuario->apellido = $p->apellido;
-    $usuario->nombre = $sp->nombre;
-    $usuario->email = $p->email;
-    $estado = $usuario->save();
-
-    if ($estado)
-        echo json_encode(array('estado' => true, 'mensaje' => 'Datos insertados correctamente. ', 'id' => $usuario->id));
-    else
-        echo json_encode(array('estado' => false, 'mensaje' => "Error al insertar datos en la tabla.", 'id' => ''));
 });
 
 //aqui empiezan las opciones 
@@ -263,7 +244,7 @@ function get_pregunta_no_respondida() {
     $codarea = null !== $request->get("codarea") ? $request->get("codarea") : null;
     if (isset($email) && isset($id_reto) && isset($codarea)) {
         echo json_encode(PreguntaController::get_pregunta_no_respondida(
-                        $request->get("email"), $request->get("id_reto"), $request->get("codarea")
+                        $email, $id_reto, $codarea
         ));
     } else {
         $respuesta = new stdClass();
@@ -271,4 +252,14 @@ function get_pregunta_no_respondida() {
         $respuesta->mensaje = "Error. Revise los datos enviados.";
         echo json_encode($respuesta);
     }
+}
+
+function post_encabezados() {
+    $request = \Slim\Slim::getInstance()->request();
+    $recibido = json_decode($request->getBody());
+    echo json_encode(EncabezadoController::post_encabezados($recibido));
+}
+
+function get_encabezados() {
+    echo json_encode(EncabezadoController::get_encabezados());
 }

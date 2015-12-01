@@ -19,10 +19,18 @@ class PreguntaController {
     }
 
     public static function post_preguntas($recibido) {
+        $opciones = $recibido->opciones;
+        unset($recibido->opciones);
         $pregunta = new Pregunta();
         $pregunta->add_data($recibido);
         $respuesta = new stdClass();
         $respuesta->result = $pregunta->save();
+        foreach ($opciones as $key => $value) {
+            $opcion = new Opcion();
+            $opcion->add_data($value);
+            $opcion->CODPREGUNTA = $pregunta->CODPREGUNTA;
+            $opcion->save();
+        }
         if ($respuesta->result) {
             $respuesta->mensaje = "Pregunta registrada correctamente.";
             $respuesta->pregunta = $pregunta;
