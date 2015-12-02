@@ -11,7 +11,7 @@ class RetoController {
         $respuesta->result = $reto->save();
         if ($respuesta->result) {
             $respuesta->mensaje = "Reto creado correctamente.";
-            $respuesta->area = $reto;
+            $respuesta->reto = $reto;
         } else {
             $respuesta->mensaje = "No se pudo crear el reto.";
         }

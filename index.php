@@ -243,9 +243,9 @@ function get_pregunta_no_respondida() {
     $id_reto = null !== $request->get("id_reto") ? $request->get("id_reto") : null;
     $codarea = null !== $request->get("codarea") ? $request->get("codarea") : null;
     if (isset($email) && isset($id_reto) && isset($codarea)) {
-        echo json_encode(PreguntaController::get_pregunta_no_respondida(
+        echo html_entity_decode(json_encode(PreguntaController::get_pregunta_no_respondida(
                         $email, $id_reto, $codarea
-        ));
+        )));
     } else {
         $respuesta = new stdClass();
         $respuesta->result = false;
