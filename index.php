@@ -59,6 +59,8 @@ $app->post('/encabezados', 'post_encabezados');
 //Retos
 $app->post('/retos', 'post_retos');
 
+$app->post('/respondidas', 'post_respondida');
+
 // Accedemos por get a /usuarios/ pasando un id de usuario. 
 // Por ejemplo /usuarios/veiga
 // Ruta /usuarios/id
@@ -244,7 +246,7 @@ function get_pregunta_no_respondida() {
     $codarea = null !== $request->get("codarea") ? $request->get("codarea") : null;
     if (isset($email) && isset($id_reto) && isset($codarea)) {
         echo html_entity_decode(json_encode(PreguntaController::get_pregunta_no_respondida(
-                        $email, $id_reto, $codarea
+                                $email, $id_reto, $codarea
         )));
     } else {
         $respuesta = new stdClass();
@@ -262,4 +264,10 @@ function post_encabezados() {
 
 function get_encabezados() {
     echo json_encode(EncabezadoController::get_encabezados());
+}
+
+function post_respondida() {
+    $request = \Slim\Slim::getInstance()->request();
+    $recibido = json_decode($request->getBody());
+    echo json_encode(RetoController::post_respondida($recibido));
 }

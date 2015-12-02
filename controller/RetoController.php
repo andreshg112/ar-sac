@@ -1,6 +1,7 @@
 <?php
 
 require_once './model/Reto.php';
+require_once './model/RespondidaReto.php';
 
 class RetoController {
 
@@ -18,4 +19,18 @@ class RetoController {
         return $respuesta;
     }
 
+    public static function post_respondida($recibido) {
+        $respondida = new RespondidaReto();
+        $respondida->add_data($recibido);
+        $respuesta = new stdClass();
+        $respuesta->result = $respondida->save();
+        
+        if ($respuesta->result) {
+            $respuesta->mensaje = "Respuesta guardada correctamente.";
+            $respuesta->reto = $respondida;
+        } else {
+            $respuesta->mensaje = "No se pudo guardar la respuesta.";
+        }
+        return $respuesta;
+    }
 }
