@@ -11,10 +11,10 @@ $capsule = new Capsule;
 //Indicamos en el siguiente array los datos de configuración de la BD
 $capsule->addConnection([
     'driver' => 'mysql',
-    'host' => '190.109.185.138',
+    'host' => 'localhost',
     'database' => 'bd_sa',
     'username' => 'root',
-    'password' => 'mysql',
+    'password' => '',
     'charset' => 'utf8',
     'collation' => 'utf8_unicode_ci',
     'prefix' => '',
