@@ -29,12 +29,21 @@ class RetoController {
     }
 
     public static function post_respondida($recibido) {
+        $opcion = $recibido->opcion;
+        unset($recibido->opcion);
         $respondida = new RespondidaReto();
         $respondida->add_data($recibido);
         $respuesta = new stdClass();
         $respuesta->result = $respondida->save();
-
         if ($respuesta->result) {
+            $participante = Participante::where("EMAIL", $recibido->email)
+                            ->where("CODRETO", $recibido->codreto)->first();
+            if ($opcion->validez == "CORRECTA") {
+                $participante->CORRECTAS = $participante->CORRECTAS + 1;
+            } else {
+                $participante->INCORRECTAS = $participante->INCORRECTAS + 1;
+            }
+            $participante->save();
             $respuesta->mensaje = "Respuesta guardada correctamente.";
             $respuesta->reto = $respondida;
         } else {
