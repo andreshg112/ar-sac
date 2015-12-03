@@ -1,15 +1,24 @@
 <?php
 
 require_once './model/Reto.php';
+require_once './model/Participante.php';
 require_once './model/RespondidaReto.php';
 
 class RetoController {
 
     public static function post_retos($recibido) {
+        $participantes = isset($recibido->participantes) ? $recibido->participantes : array();
+        unset($recibido->participantes);
         $reto = new Reto();
         $reto->add_data($recibido);
         $respuesta = new stdClass();
         $respuesta->result = $reto->save();
+        foreach ($participantes as $value) {
+            $participante = new Participante();
+            $participante->add_data($value);
+            $participante->CODRETO = $reto->CODRETO;
+            $participante->save();
+        }
         if ($respuesta->result) {
             $respuesta->mensaje = "Reto creado correctamente.";
             $respuesta->reto = $reto;
@@ -24,7 +33,7 @@ class RetoController {
         $respondida->add_data($recibido);
         $respuesta = new stdClass();
         $respuesta->result = $respondida->save();
-        
+
         if ($respuesta->result) {
             $respuesta->mensaje = "Respuesta guardada correctamente.";
             $respuesta->reto = $respondida;
@@ -33,4 +42,5 @@ class RetoController {
         }
         return $respuesta;
     }
+
 }

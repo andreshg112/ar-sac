@@ -242,11 +242,11 @@ function post_retos() {
 function get_pregunta_no_respondida() {
     $request = \Slim\Slim::getInstance()->request();
     $email = null !== $request->get("email") ? $request->get("email") : null;
-    $id_reto = null !== $request->get("id_reto") ? $request->get("id_reto") : null;
+    $codreto = null !== $request->get("codreto") ? $request->get("codreto") : null;
     $codarea = null !== $request->get("codarea") ? $request->get("codarea") : null;
-    if (isset($email) && isset($id_reto) && isset($codarea)) {
+    if (isset($email) && isset($codreto) && isset($codarea)) {
         echo html_entity_decode(json_encode(PreguntaController::get_pregunta_no_respondida(
-                                $email, $id_reto, $codarea
+                                $email, $codreto, $codarea
         )));
     } else {
         $respuesta = new stdClass();

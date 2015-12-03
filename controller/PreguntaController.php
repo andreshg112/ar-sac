@@ -83,13 +83,13 @@ class PreguntaController {
         return $respuesta;
     }
 
-    public static function get_pregunta_no_respondida($email, $id_reto, $id_area) {
+    public static function get_pregunta_no_respondida($email, $codreto, $id_area) {
         $respuesta = new stdClass();
-        $pregunta = Pregunta::whereNotIn("CODPREGUNTA", function($query) use ($email, $id_reto) {
+        $pregunta = Pregunta::whereNotIn("CODPREGUNTA", function($query) use ($email, $codreto) {
                     $query->select("CODPREGUNTA")
                     ->from("RESPONDIDAS_RETO")
                     ->where("EMAIL", "=", "$email")
-                    ->where("ID_RETO", "=", "$id_reto");
+                    ->where("CODRETO", "=", "$codreto");
                 })
                 ->where("CODAREA", "=", "$id_area")
                 ->orderByRaw("rand()")
