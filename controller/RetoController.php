@@ -44,6 +44,15 @@ class RetoController {
         }
         $respuesta->result_participante = $participante->save();
         if ($respuesta->result) {
+            $participante = Participante::where('EMAIL', $recibido->email)
+                    ->where('CODRETO', $recibido->codreto);
+            $campo = '';
+            if ($opcion->VALIDEZ == 'CORRECTA') {
+                $campo = 'CORRECTAS';
+            } else {
+                $campo = 'INCORRECTAS';
+            }
+            $respuesta->result_2 = $participante->increment($campo);
             $respuesta->mensaje = "Respuesta guardada correctamente.";
             $respuesta->reto = $respondida;
         } else {
