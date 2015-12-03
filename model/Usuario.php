@@ -9,7 +9,7 @@ class Usuario extends MiModelo {
     //le asigna un valor numerico del auto_increment
     //Modificar en la BD los campos para que sean mayusculas
     protected $hidden = ["CONTRASENIA", "id", "active", "datos_concatenados"];
-    protected $fillable = array('EMAIL', 'NOMBRE', 'APELLIDO', 'FECHANAC', 'SEXO');
+    protected $fillable = array('CONTRASENIA','EMAIL', 'NOMBRE', 'APELLIDO', 'SEXO');
 
 }
 
