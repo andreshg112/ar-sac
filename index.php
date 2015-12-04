@@ -36,7 +36,7 @@ $app->get('/', function() {
 $app->post("/usuarios/sesion", "iniciar_sesion");
 $app->get("/usuarios", "get_usuarios");
 $app->post("/usuarios", "post_usuarios");
-$app->get("/usuarios/:email/retos", "get_retos_usuario");
+$app->get("/usuarios/:id/retos", "get_retos_usuario");
 
 //Preguntas
 $app->get('/preguntas', "get_preguntas");
@@ -48,8 +48,7 @@ $app->get('/preguntas/:id', function($id) {
 });
 $app->post('/preguntas', 'post_preguntas');
 $app->put('/preguntas/:id', 'put_preguntas');
-//Modificar
-$app->delete('/preguntas/:id', 'delete_pregunta');
+$app->delete('/preguntas/:id', 'delete_pregunta'); //Modificar
 $app->get('/preguntas/:id/opciones', 'get_opciones_pregunta');
 $app->get('/no-respondida', 'get_pregunta_no_respondida');
 
@@ -64,8 +63,11 @@ $app->post('/encabezados', 'post_encabezados');
 
 //Retos
 $app->post('/retos', 'post_retos');
+$app->get("/retos/:id/participantes", "get_participantes_reto");
 
+//Respondidas
 $app->post('/respondidas', 'post_respondida');
+
 $app->get('/encabezados/:id', function($id) {
     echo 'encabezados por id ';
 });
@@ -89,45 +91,15 @@ $app->get('/opciones/:id', function($id) {
 });
 
 $app->put('/opciones/:id', function($id) {
-    // Los datos serán accesibles de esta forma:
-    $p = json_decode($app->request->getBody());
-    //echo json_encode($p->nombre);
-    $usuario = new Pregunta();
-    $usuario->id = $p->id;
-    $usuario->apellido = $p->apellido;
-    $usuario->nombre = $sp->nombre;
-    $usuario->email = $p->email;
-    $estado = $usuario->save();
+    
 });
 
 $app->delete('/opciones/:id', function($id) {
-    // Los datos serán accesibles de esta forma:
-    $p = json_decode($app->request->getBody());
-    //echo json_encode($p->nombre);
-    $usuario = new Pregunta();
-    $usuario->id = $p->id;
-    $usuario->apellido = $p->apellido;
-    $usuario->nombre = $sp->nombre;
-    $usuario->email = $p->email;
-    $estado = $usuario->delete();
+    
 });
 
-// Alta de usuarios en la API REST
 $app->post('/opciones', function() {
-    // Los datos serán accesibles de esta forma:
-    $p = json_decode($app->request->getBody());
-    //echo json_encode($p->nombre);
-    $usuario = new Pregunta();
-    $usuario->id = $p->id;
-    $usuario->apellido = $p->apellido;
-    $usuario->nombre = $sp->nombre;
-    $usuario->email = $p->email;
-    $estado = $usuario->save();
-
-    if ($estado)
-        echo json_encode(array('estado' => true, 'mensaje' => 'Datos insertados correctamente. ', 'id' => $usuario->id));
-    else
-        echo json_encode(array('estado' => false, 'mensaje' => "Error al insertar datos en la tabla.", 'id' => ''));
+    
 });
 
 $app->get('/resultados', function() {
@@ -255,4 +227,9 @@ function post_respondida() {
     $request = \Slim\Slim::getInstance()->request();
     $recibido = json_decode($request->getBody());
     echo json_encode(RetoController::post_respondida($recibido));
+}
+
+//Retos fnc
+function get_participantes_reto($id) {
+    echo json_encode(RetoController::get_participantes_reto($id));
 }

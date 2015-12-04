@@ -12,10 +12,14 @@ class Participante extends MiModelo {
 
     //protected $primaryKey = ['CODRETO', 'EMAIL'];
     //Para sobreescribir la busqueda por defecto
-    /*function newQuery() {
-        $query = parent::newQuery();
-        $query->where($this->key1, '=', $this->CODRETO)->where($this->key2, '=', $this->EMAIL);
-        return $query;
-    }*/
+    /* function newQuery() {
+      $query = parent::newQuery();
+      $query->where($this->key1, '=', $this->CODRETO)->where($this->key2, '=', $this->EMAIL);
+      return $query;
+      } */
+
+    public function usuario() {
+        return $this->belongsTo('Usuario', 'EMAIL', 'EMAIL');
+    }
 
 }

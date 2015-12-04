@@ -55,4 +55,20 @@ class RetoController {
         return $respuesta;
     }
 
+    public static function get_participantes_reto($id) {
+        $reto = Reto::with("participantes")->find($id);
+        $respuesta = new stdClass();
+        if ($reto) {
+            $respuesta->result = true;
+            foreach ($reto->participantes as $participante) {
+                $participante->usuario;
+            }
+            $respuesta->participantes = $reto->participantes;
+        } else {
+            $respuesta->result = false;
+            $respuesta->mensaje = "Usuario no encontrado";
+        }
+        return $respuesta;
+    }
+
 }
