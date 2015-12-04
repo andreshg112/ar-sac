@@ -5,9 +5,13 @@ require_once './model/Pregunta.php';
 class PreguntaController {
 
     //Aplicar filtro despues
-    public static function get_preguntas() {
+    public static function get_preguntas($limit, $filtro) {
         $respuesta = new stdClass();
-        $respuesta->preguntas = Pregunta::all();
+        //$respuesta->preguntas = Pregunta::all();
+        $respuesta->preguntas = Pregunta::selectRaw("*, ENUNCIADO as datos_concatenados")
+                ->havingRaw("datos_concatenados like '%$filtro%'")
+                ->take($limit)
+                ->get();
         foreach ($respuesta->preguntas as $pregunta) {
             $pregunta->encabezado;
         }

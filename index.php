@@ -201,7 +201,10 @@ function get_usuarios() {
 }
 
 function get_preguntas() {
-    echo json_encode(PreguntaController::get_preguntas());
+    $request = \Slim\Slim::getInstance()->request();
+    $limit = null !== $request->get("limit") ? $request->get("limit") : 10;
+    $filtro = null !== $request->get("filtro") ? $request->get("filtro") : "";
+    echo json_encode(PreguntaController::get_preguntas($limit, $filtro));
 }
 
 function post_preguntas() {
