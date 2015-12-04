@@ -60,6 +60,7 @@ class RetoController {
         $respuesta = new stdClass();
         if ($reto) {
             $respuesta->result = true;
+            $reto->participantes = $reto->participantes()->orderByRaw('CORRECTAS desc')->get();
             foreach ($reto->participantes as $participante) {
                 $participante->usuario;
             }

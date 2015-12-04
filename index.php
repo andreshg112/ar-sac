@@ -102,20 +102,8 @@ $app->post('/opciones', function() {
     
 });
 
-$app->get('/resultados', function() {
-    echo "resultados generales ";
-});
+$app->get('/resultados/:id', "get_resultados_participante");
 
-$app->get('/resultados?id_area=:id_area', function($id_area) {
-    echo "resultados geerales por area ";
-});
-$app->get('/resultados?id_usuario=:id_usuario&id_area=:id_area', function($id_usuario, $id_area) {
-//    echo $id_usuario;
-//    echo "<br>";
-//    echo $id_area;
-//    echo "algo";
-    echo "resultados general de un usuario por area";
-});
 $app->get('/resultados?id_usuario=:id_usuario', function($id_usuario) {
     echo "resultados generales de un usuario ";
 });
@@ -232,4 +220,9 @@ function post_respondida() {
 //Retos fnc
 function get_participantes_reto($id) {
     echo json_encode(RetoController::get_participantes_reto($id));
+}
+
+//Participante fnc
+function get_resultados_participante($id) {
+    echo json_encode(ParticipanteController::get_resultados_participante($id));
 }
