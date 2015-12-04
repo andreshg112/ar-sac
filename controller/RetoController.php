@@ -46,7 +46,9 @@ class RetoController {
             }
             $respuesta->result_2 = $participante->increment($campo);
             $respuesta->mensaje = "Respuesta guardada correctamente.";
-            $respuesta->reto = $respondida;
+            //true si termino, false si no.
+            $respuesta->respondidas = $participante->sum('CORRECTAS') + $participante->sum('INCORRECTAS');
+            $respuesta->termino = $respuesta->respondidas >= 10;
         } else {
             $respuesta->mensaje = "No se pudo guardar la respuesta.";
         }
