@@ -56,4 +56,32 @@ class UsuarioController {
         return $respuesta;
     }
 
+    public static function get_retos_usuario($email) {
+        $usuario = Usuario::find($email);
+        $respuesta = new stdClass();
+        if ($usuario) {
+            $respuesta->result = true;
+            $respuesta->usuario = $usuario;
+            $respuesta->terminados = $usuario->retos()
+                            ->whereRaw('CORRECTAS + INCORRECTAS >= 10')->get();
+            $respuesta->responde = $usuario->retos()
+                            ->whereRaw('CORRECTAS + INCORRECTAS < 10')->get();
+        } else {
+            $respuesta->result = false;
+            $respuesta->mensaje = "Usuario no encontrado";
+        }
+        return $respuesta;
+    }
+
+//    public static function get_retos_usuario($email) {
+//        $usuario = Usuario::with('participantes')->find($email);
+//        $respuesta = new stdClass();
+//        if ($usuario) {
+//            $respuesta->usuario = $usuario;
+//        } else {
+//            $respuesta->result = false;
+//            $respuesta->mensaje = "Usuario no encontrado";
+//        }
+//        return $respuesta;
+//    }
 }

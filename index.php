@@ -26,15 +26,21 @@ $app->get('/', function() {
 //PUT: Actualizar
 //DELETE: Eliminar un registro
 //
+// Accedemos por get a /usuarios/ pasando un id de usuario. 
+// Por ejemplo /usuarios/veiga
+// Ruta /usuarios/id
+// Los parámetros en la url se definen con :parametro
+// El valor del parámetro :idusuario se pasará a la función de callback como argumento
+//
 //Usuarios
 $app->post("/usuarios/sesion", "iniciar_sesion");
 $app->get("/usuarios", "get_usuarios");
 $app->post("/usuarios", "post_usuarios");
+$app->get("/usuarios/:email/retos", "get_retos_usuario");
 
 //Preguntas
 $app->get('/preguntas', "get_preguntas");
-// Los parámetros en la url se definen con :parametro
-// El valor del parámetro :id se pasará a la función de callback como argumento
+
 $app->get('/preguntas/:id', function($id) {
     //Modificar
     //No es prioritario que se busquen las preguntas por id
@@ -60,42 +66,16 @@ $app->post('/encabezados', 'post_encabezados');
 $app->post('/retos', 'post_retos');
 
 $app->post('/respondidas', 'post_respondida');
-
-// Accedemos por get a /usuarios/ pasando un id de usuario. 
-// Por ejemplo /usuarios/veiga
-// Ruta /usuarios/id
-// Los parámetros en la url se definen con :parametro
-// El valor del parámetro :idusuario se pasará a la función de callback como argumento
 $app->get('/encabezados/:id', function($id) {
     echo 'encabezados por id ';
 });
-//encabezados por filtro 
-$app->get('/encabezados?filtro=:filtro', function($id) {
-    echo 'filtro encabezados';
-});
 
 $app->put('/encabezados/:id', function($id) {
-    // Los datos serán accesibles de esta forma:
-    $p = json_decode($app->request->getBody());
-    //echo json_encode($p->nombre);
-    $usuario = new Pregunta();
-    $usuario->id = $p->id;
-    $usuario->apellido = $p->apellido;
-    $usuario->nombre = $sp->nombre;
-    $usuario->email = $p->email;
-    $estado = $usuario->save();
+    
 });
 
 $app->delete('/encabezados/:id', function($id) {
-    // Los datos serán accesibles de esta forma:
-    $p = json_decode($app->request->getBody());
-    //echo json_encode($p->nombre);
-    $usuario = new Pregunta();
-    $usuario->id = $p->id;
-    $usuario->apellido = $p->apellido;
-    $usuario->nombre = $sp->nombre;
-    $usuario->email = $p->email;
-    $estado = $usuario->delete();
+    
 });
 
 //aqui empiezan las opciones 
@@ -103,11 +83,7 @@ $app->get('/opciones', function() {
     echo 'todas las opciones';
 });
 
-// Accedemos por get a /usuarios/ pasando un id de usuario. 
-// Por ejemplo /usuarios/veiga
-// Ruta /usuarios/id
-// Los parámetros en la url se definen con :parametro
-// El valor del parámetro :idusuario se pasará a la función de callback como argumento
+
 $app->get('/opciones/:id', function($id) {
     echo 'opciones por id ';
 });
@@ -174,6 +150,7 @@ $app->get('/resultados?id_usuario=:id_usuario', function($id_usuario) {
 
 $app->run();
 
+//Usuarios fnc
 function iniciar_sesion() {
     $request = \Slim\Slim::getInstance()->request();
     $recibido = json_decode($request->getBody());
@@ -188,8 +165,8 @@ function post_usuarios() {
     echo json_encode(UsuarioController::post_usuarios($recibido));
 }
 
-function get_areas() {
-    echo json_encode(AreaController::get_areas());
+function get_retos_usuario($email) {
+    echo json_encode(UsuarioController::get_retos_usuario($email));
 }
 
 function get_usuarios() {
@@ -198,6 +175,11 @@ function get_usuarios() {
     $filtro = null !== $request->get("filtro") ? $request->get("filtro") : "";
     $orden = null !== $request->get("orden") ? "datos_concatenados" : "rand()";
     echo json_encode(UsuarioController::get_usuarios($limit, $filtro, $orden));
+}
+
+//Area fnc
+function get_areas() {
+    echo json_encode(AreaController::get_areas());
 }
 
 function get_preguntas() {
