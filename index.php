@@ -58,6 +58,8 @@ $app->get('/no-respondida', 'get_pregunta_no_respondida');
 $app->get('/areas', "get_areas");
 $app->get('/areas/:id/preguntas', "get_preguntas_area");
 $app->post('/areas', "post_areas");
+$app->delete("/areas/:codarea", "delete_area");
+$app->put("/areas/:codarea", "put_area");
 
 //Encabezados
 $app->get('/encabezados', 'get_encabezados');
@@ -149,6 +151,15 @@ function put_usuario($email) {
 //Area fnc
 function get_areas() {
     echo json_encode(AreaController::get_areas());
+}
+function delete_area($codarea) {
+    echo json_encode(AreaController::delete_area($codarea));
+}
+
+function put_area($codarea) {
+    $request = \Slim\Slim::getInstance()->request();
+    $recibido = json_decode($request->getBody());
+    echo json_encode(AreaController::put_area($codarea, $recibido));
 }
 
 function get_preguntas() {
