@@ -38,6 +38,7 @@ $app->get("/usuarios", "get_usuarios");
 $app->post("/usuarios", "post_usuarios");
 $app->get("/usuarios/:id/retos", "get_retos_usuario");
 $app->delete("/usuarios/:email", "delete_usuario");
+$app->put("/usuarios/:email", "put_usuario");
 
 //Preguntas
 $app->get('/preguntas', "get_preguntas");
@@ -140,6 +141,12 @@ function get_usuarios() {
 
 function delete_usuario($email) {
     echo json_encode(UsuarioController::delete_usuario($email));
+}
+
+function put_usuario($email) {
+    $request = \Slim\Slim::getInstance()->request();
+    $recibido = json_decode($request->getBody());
+    echo json_encode(UsuarioController::put_usuario($email, $recibido));
 }
 
 //Area fnc

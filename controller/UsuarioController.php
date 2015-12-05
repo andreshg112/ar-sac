@@ -90,4 +90,18 @@ class UsuarioController {
         return $respuesta;
     }
 
+    public static function put_usuario($email, $recibido) {
+        $usuario = Usuario::find($email);
+        $usuario->add_data($recibido);
+        $respuesta = new stdClass();
+        $respuesta->result = $usuario->save();
+        if ($respuesta->result) {
+            $respuesta->mensaje = "Actualizado correctamente.";
+            $respuesta->usuario = $usuario;
+        } else {
+            $respuesta->mensaje = "Error al momento de actualizar.";
+        }
+        return $respuesta;
+    }
+
 }
