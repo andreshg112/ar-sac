@@ -43,6 +43,6 @@ class AreaController {
             $respuesta->mensaje = "No se pudo registrar el área.";
         }
         return $respuesta;
-    }
-
+    }  
+     
 }
