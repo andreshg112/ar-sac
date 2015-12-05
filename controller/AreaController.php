@@ -43,6 +43,37 @@ class AreaController {
             $respuesta->mensaje = "No se pudo registrar el área.";
         }
         return $respuesta;
-    }  
+    }
+    
+    public static function delete_area($codarea) {
+        $area = Area::find($codarea);
+        $respuesta = new stdClass();
+        if ($area) {
+            $respuesta->result = $area->delete();
+            if ($area->trashed()) {
+                $respuesta->mensaje = "Eliminado correctamente.";
+                $respuesta->area = $area;
+            } else {
+                $respuesta->mensaje = "Error tratando de eliminar.";
+            }
+        } else {
+            $respuesta->mensaje = "No se encuentra registrado.";
+        }
+        return $respuesta;
+    }
+    
+    public static function put_area($codarea, $recibido) {
+        $area = Area::find($codarea);
+        $area->add_data($recibido);
+        $respuesta = new stdClass();
+        $respuesta->result = $area->save();
+        if ($respuesta->result) {
+            $respuesta->mensaje = "Actualizado correctamente.";
+            $respuesta->area = $area;
+        } else {
+            $respuesta->mensaje = "Error al momento de actualizar.";
+        }
+        return $respuesta;
+    }
      
 }
