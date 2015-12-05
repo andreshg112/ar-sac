@@ -73,4 +73,21 @@ class UsuarioController {
         return $respuesta;
     }
 
+    public static function delete_usuario($email) {
+        $usuario = Usuario::find($email);
+        $respuesta = new stdClass();
+        if ($usuario) {
+            $respuesta->result = $usuario->delete();
+            if ($usuario->trashed()) {
+                $respuesta->mensaje = "Eliminado correctamente.";
+                $respuesta->usuario = $usuario;
+            } else {
+                $respuesta->mensaje = "Error tratando de eliminar.";
+            }
+        } else {
+            $respuesta->mensaje = "No se encuentra registrado.";
+        }
+        return $respuesta;
+    }
+
 }

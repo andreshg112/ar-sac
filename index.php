@@ -37,6 +37,7 @@ $app->post("/usuarios/sesion", "iniciar_sesion");
 $app->get("/usuarios", "get_usuarios");
 $app->post("/usuarios", "post_usuarios");
 $app->get("/usuarios/:id/retos", "get_retos_usuario");
+$app->delete("/usuarios/:email", "delete_usuario");
 
 //Preguntas
 $app->get('/preguntas', "get_preguntas");
@@ -135,6 +136,10 @@ function get_usuarios() {
     $filtro = null !== $request->get("filtro") ? $request->get("filtro") : "";
     $orden = null !== $request->get("orden") ? "datos_concatenados" : "rand()";
     echo json_encode(UsuarioController::get_usuarios($limit, $filtro, $orden));
+}
+
+function delete_usuario($email) {
+    echo json_encode(UsuarioController::delete_usuario($email));
 }
 
 //Area fnc

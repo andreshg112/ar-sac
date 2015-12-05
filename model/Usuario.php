@@ -2,16 +2,25 @@
 
 require_once 'MiModelo.php';
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Usuario extends MiModelo {
 
+    use SoftDeletes;
+
     protected $table = "usuarios";
-    //protected $primaryKey = "EMAIL"; //No se debe usar porque al guardar (save), 
-    //le asigna un valor numerico del auto_increment
-    //Modificar en la BD los campos para que sean mayusculas
-    protected $hidden = ["CONTRASENIA", "id", "active", "datos_concatenados"];
-    protected $fillable = array('CONTRASENIA', 'EMAIL', 'NOMBRE', 'APELLIDO', 'SEXO');
-    public $incrementing = false;
     protected $primaryKey = 'EMAIL';
+    //Modificar en la BD los campos para que sean mayusculas
+    protected $hidden = ["CONTRASENIA", "datos_concatenados", "DELETED_AT"];
+    //protected $fillable = array('CONTRASENIA', 'EMAIL', 'NOMBRE', 'APELLIDO', 'SEXO');
+    public $incrementing = false;
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
 
     public function retos() {
         return $this->belongsToMany('Reto', 'participantes', 'EMAIL', 'CODRETO');
