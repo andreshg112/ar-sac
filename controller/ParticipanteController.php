@@ -17,10 +17,28 @@ class ParticipanteController {
                     ->where('participantes.EMAIL', $id)
                     ->groupBy('areas.CODAREA')
                     ->get();
-            //DB::raw("select participantes.EMAIL, retos.CODAREA, areas.NOMAREA, sum(CORRECTAS), sum(INCORRECTAS) from `participantes` inner join retos on retos.CODRETO = participantes.CODRETO inner join areas on areas.CODAREA = retos.CODAREA WHERE participantes.EMAIL = '$id' group by retos.codarea ");
         } else {
             $respuesta->result = false;
-            $respuesta->mensaje = "El usuario no ha participado en ningún reto.";
+            $respuesta->mensaje = "No hay resultados que mostrar.";
+        }
+        return $respuesta;
+    }
+
+    public static function get_resultados_generales() {
+        $respuesta = new stdClass();
+        $participantes = Participante::all();
+        if (count($participantes) != 0) {
+            $respuesta->result = false;
+            $respuesta->correctas = $participantes->sum('CORRECTAS');
+            $respuesta->incorrectas = $participantes->sum('INCORRECTAS');
+            $respuesta->resultados = Participante::selectRaw('areas.NOMAREA, sum(CORRECTAS) as CORRECTAS, sum(INCORRECTAS) as INCORRECTAS')
+                    ->join('retos', 'retos.CODRETO', '=', 'participantes.CODRETO')
+                    ->join('areas', 'areas.CODAREA', '=', 'retos.CODAREA')
+                    ->groupBy('areas.CODAREA')
+                    ->get();
+        } else {
+            $respuesta->result = false;
+            $respuesta->mensaje = "No hay resultados que mostrar.";
         }
         return $respuesta;
     }

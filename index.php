@@ -104,11 +104,8 @@ $app->post('/opciones', function() {
     
 });
 
+$app->get('/resultados', "get_resultados_generales");
 $app->get('/resultados/:id', "get_resultados_participante");
-
-$app->get('/resultados?id_usuario=:id_usuario', function($id_usuario) {
-    echo "resultados generales de un usuario ";
-});
 
 $app->run();
 
@@ -237,4 +234,8 @@ function get_participantes_reto($id) {
 //Participante fnc
 function get_resultados_participante($id) {
     echo json_encode(ParticipanteController::get_resultados_participante($id));
+}
+
+function get_resultados_generales() {
+    echo json_encode(ParticipanteController::get_resultados_generales());
 }
