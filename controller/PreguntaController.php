@@ -100,6 +100,7 @@ class PreguntaController {
                 ->first();
         if ($pregunta) {
             $pregunta->encabezado;
+            //$pregunta->opciones()->orderByRaw("rand()");
             $pregunta->opciones;
             $respuesta->pregunta = $pregunta;
             $respuesta->result = true;

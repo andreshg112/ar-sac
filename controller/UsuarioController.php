@@ -62,9 +62,9 @@ class UsuarioController {
         if ($usuario) {
             $respuesta->result = true;
             $respuesta->usuario = $usuario;
-            $respuesta->terminados = $usuario->retos()
+            $respuesta->terminados = $usuario->retos()->with("participantes")
                             ->whereRaw('CORRECTAS + INCORRECTAS >= 10')->get();
-            $respuesta->responde = $usuario->retos()
+            $respuesta->responde = $usuario->retos()->with("participantes")
                             ->whereRaw('CORRECTAS + INCORRECTAS < 10')->get();
         } else {
             $respuesta->result = false;
